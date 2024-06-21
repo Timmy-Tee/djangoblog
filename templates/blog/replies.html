@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}
+Blog Post
+{% endblock title %}
+
+{% block content %}
+
+<!-- Comments -->
+<section class="container-fluid border d-grid"
+     style="padding: 20px">
+
+     <!-- breadcrumb -->
+     <nav aria-label="breadcrumb" class="my-3 col-md-9 d-flex" style="place-content: end;">
+          <ol class="breadcrumb">
+               <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+               <li class="breadcrumb-item active" aria-current="page">{{comments.author}}</li>
+          </ol>
+     </nav>
+
+     <div class="mb-2 col-md-10">
+          <h3 class="mb-4">Comments</h3>
+
+          {% if comments %}
+          <div class="media d-block d-sm-flex mb-4 p-4 border" id="parentDiv">
+               <a class="d-inline-block mr-2 mb-3 mb-md-0" href="#">
+                    <img src="images/post/user-01.jpg" class="mr-3 rounded-circle" alt="">
+               </a>
+               <div class="media-body">
+                    <a href="#!" class="h4 d-inline-block mb-3"> {{comments.author | title}} </a>
+
+                    <p>{{comments.comments | linebreaksbr}}</p>
+
+                    <span class="text-black-800 mr-3 font-weight-600"> {{comments.createdAt | date}} at
+                         {{comments.createdAt | time}} </span>
+
+               </div>
+          </div>
+
+
+          {% else %}
+          <p>No Comments Currently...</p>
+          {% endif %}
+
+          <div class="mb-2 col-md-10">
+               <h3 class="mb-4">Replies</h3>
+               {% if replies %}
+               {% for reply in replies %}
+               <div class="media d-block d-sm-flex mb-4 p-4 border" style="margin-left: 20px;" id="parentDiv">
+                    <a class="d-inline-block mr-2 mb-3 mb-md-0" href="#">
+                         <img src="images/post/user-01.jpg" class="mr-3 rounded-circle" alt="">
+                    </a>
+                    <div class="media-body">
+                         <a href="#!" class="h5 d-inline-block mb-3"> {{reply.author | title}} </a>
+
+                         <p style="font-size: 14px;">{{reply.comments | linebreaksbr}}</p>
+
+                         <span class="text-black-800 mr-3 font-weight-600"> {{reply.createdAt | date}} at
+                              {{reply.createdAt | time}} </span>
+
+                    </div>
+               </div>
+               {% endfor %}
+               {% else %}
+               <p>No Replies Currently...</p>
+               {% endif %}
+
+          </div>
+     </div>
+     </div>
+
+
+     <div class=" col-md-10 ">
+          {% if request.user.is_authenticated %}
+
+          <h3 class="mb-4">Leave a Reply</h3>
+          <form action="{% url 'blog_reply' %}" method="POST">
+               {% csrf_token %}
+               <div class="row form">
+                    <input type="hidden" name="single_comment_id" value="{{ comments.id }}">
+                    <input type="hidden" name="single_comment_blog_id" value="{{ blogPost.id }}">
+                    <div class="form-group col-md-4 mb-4">
+                         <input class="form-control shadow-none" type="text" name="username" value="{{request.user.username | title}}"
+                              readonly>
+                    </div>
+                    <div class="form-group col-md-12 mb-4">
+                         <textarea class="form-control shadow-none" placeholder="Your Replies..." name="comment"
+                              rows="3" required></textarea>
+                    </div>
+
+               </div>
+               <button class="btn btn-primary" type="submit">Reply Now</button>
+          </form>
+          {% else %}
+          <h3 class="mb-4">Leave a Reply</h3>
+          <form action="{% url 'blog_reply' %}" method="POST">
+               {% csrf_token %}
+               <div class="row form">
+                    <input type="hidden" name="single_comment_id" value="{{ comments.id }}">
+                    <input type="hidden" name="single_comment_blog_id" value="{{ blogPost.id }}">
+                    <div class="form-group col-md-4 mb-4">
+                         <input class="form-control shadow-none" type="text" name="username" placeholder="Name"
+                              required>
+                    </div>
+                    <div class="form-group col-md-12 mb-4">
+                         <textarea class="form-control shadow-none" placeholder="Your Replies..." name="comment"
+                              rows="3" required></textarea>
+                    </div>
+
+               </div>
+               <button class="btn btn-primary" type="submit">Reply Now</button>
+          </form>
+
+          {% endif %}
+
+     </div>
+</section>
+
+
+
+{% endblock content %}

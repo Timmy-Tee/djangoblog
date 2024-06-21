@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}
+Blog Post
+{% endblock title %}
+
+{% block content %}
+
+<section class="section">
+     <div class="container-fluid p-5 d-flex justify-content-center flex-column">
+
+
+          <div class="row justify-content-center">
+               <div class=" col-lg-10 mb-5 mb-lg-0">
+                    <a href="{% url 'home' %}" class="btn btn-success gap-4" style="margin-bottom: 15px; width: 15%;">
+                         <i class="bi bi-arrow-left"></i> Back</a>
+                    <article>
+                         <div class="post-slider mb-4">
+                              <img src="{{single_blog.coverImage.url}}" class="card-img" alt="post-thumb"
+                                   style="object-position: center; object-fit: cover; height: 60vh;">
+                         </div>
+
+                         <h1 class="h2"><span class="text-muted" style="font-size: 21px;">Title:</span> {{single_blog.title | title}}</h1>
+
+                         <ul class="card-meta my-3 list-inline d-flex align-items-center justify-content-between">
+                              <li class=" d-flex gap-2 align-items-center">
+                                   <img src="{{single_blog.author_image.url}}" class="rounded-2" width="102" height="102"
+                                        style="object-fit: cover; object-position: center;">
+                                   <span>{{single_blog.author_name}}</span>
+                                   <i class="bi bi-calendar"></i>{{single_blog.createdAt | date}}
+                              </li>
+
+                              <div class="like_comment">
+                                 {% if request.user.is_authenticated %}
+                                 <h6 class="fs-4 m-0"> <i class="bi bi-chat-fill" style="color: aquamarine; margin-right: 10px;"></i>: {{total_blog_comment}} </h6>
+                                 <iframe style="display: none; padding: 0; margin: 0;" name="like-frame" frameborder="0"></iframe>
+                                 <form target="like-frame" action="{% url 'handleLikes' single_blog.id %}" method="post" style="display: grid; place-content: center;">
+                                      {% csrf_token %}
+                                      <label class="ui-like" for="checkbox" id="heart" onclick="this.form.submit()">
+                                           <input type="checkbox" id="checkbox" {% if like_status == 'checked' %}checked{% else %}{% endif %}/>
+                                           <div class="like">
+                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill=""><g stroke-width="0" id="SVGRepo_bgCarrier"></g><g stroke-linejoin="round" stroke-linecap="round" id="SVGRepo_tracerCarrier"></g><g id="SVGRepo_iconCarrier"><path d="M20.808,11.079C19.829,16.132,12,20.5,12,20.5s-7.829-4.368-8.808-9.421C2.227,6.1,5.066,3.5,8,3.5a4.444,4.444,0,0,1,4,2,4.444,4.444,0,0,1,4-2C18.934,3.5,21.773,6.1,20.808,11.079Z"></path></g></svg>
+                                              </div>
+                                         </label>
+                                 </form>
+                                   
+                                 {% else %}
+                                 <h6 class="fs-4 m-0"> <i class="bi bi-chat-fill" style="color: aquamarine; margin-right: 10px;"></i>: {{total_blog_comment}} </h6>
+                                   
+                                 {% endif %}
+                                 
+                                 
+                                     
+                                     
+                                   
+                              </div>
+                         </ul>
+                         <div class="content">
+                              <p> {{single_blog.description| linebreaksbr }} </p>
+                         </div>
+                    </article>
+
+               </div>
+
+
+               <!-- Comments -->
+               <div class="col-lg-10 col-md-12">
+                    <div class="mb-5 border-top mt-4 pt-5">
+                         <h3 class="mb-4">Comments</h3>
+
+                         {% if blog_comment %}
+                         {% for comment in blog_comment %}
+                         <div class="media d-block d-sm-flex mb-4 p-4 " id="parentDiv">
+                              <a class="d-inline-block mr-2 mb-3 mb-md-0" href="#">
+                                   <img src="images/post/user-01.jpg" class="mr-3 rounded-circle" alt="">
+                              </a>
+                              <div class="media-body">
+                                   <a href="?commentId={{comment.id}}" class="h4 d-inline-block mb-3">
+                                        {{comment.author | title}} </a>
+
+                                   <p>{{comment.comments | linebreaksbr}}</p>
+
+                                   <div class="d-flex gap-2 align-items-center ">
+
+                                        <span class="text-black-800 mr-3 font-weight-600"> {{comment.createdAt | date}}
+                                             at
+                                             {{comment.createdAt | time}} </span>
+                                        <a href="?commentId={{comment.id}}">Reply </a>
+                                        <h6 class="p-0 m-0"> <i class="bi bi-chat-fill"
+                                                  style="color: aquamarine; margin-right: 10px;"></i>:
+                                             {{comment.totalReplies}} </h6>
+                                   </div>
+
+                              </div>
+                         </div>
+                         {% endfor %}
+                         {% else %}
+                         <p>No Comments Currently...</p>
+                         {% endif %}
+
+                    </div>
+
+                    {% if request.user.is_authenticated %}
+                    <div>
+                         <h3 class="mb-4">Leave a Comment</h3>
+                         <form method="POST">
+                              {% csrf_token %}
+                              <div class="row form">
+                                   <input type="hidden" name="blogtitle" value="{{ single_blog.title }}">
+                                   <div class="form-group col-md-4 mb-4">
+                                        <input class="form-control shadow-none" type="text" name="username"
+                                              value="{{request.user.username | title}}" readonly>
+                                   </div>
+                                   <div class="form-group col-md-12 mb-4">
+                                        <textarea class="form-control shadow-none" placeholder="Your Comments..."
+                                             name="comment" rows="7" required></textarea>
+                                   </div>
+
+                              </div>
+                              <button class="btn btn-primary" type="submit">Comment Now</button>
+                         </form>
+                    </div>
+                    {% else %}
+                      
+                    <div>
+                         <h3 class="mb-4">Leave a Comment</h3>
+                         <form method="POST">
+                              {% csrf_token %}
+                              <div class="row form">
+                                   <div class="form-group col-md-4 mb-4">
+                                        <input class="form-control shadow-none" type="text" name="username"
+                                             placeholder="Name" required>
+                                   </div>
+                                   <div class="form-group col-md-12 mb-4">
+                                        <textarea class="form-control shadow-none" placeholder="Your Comments..."
+                                             name="comment" rows="7" required></textarea>
+                                   </div>
+
+                              </div>
+                              <button class="btn btn-primary" type="submit">Comment Now</button>
+                         </form>
+                    </div>
+                    {% endif %}
+                    
+               </div>
+
+          </div>
+     </div>
+</section>
+
+<!-- The Modal -->
+<div class="modal" id="myModal">
+     <div class="modal-dialog">
+          <div class="modal-content">
+
+               <!-- Modal Header -->
+               <div class="modal-header">
+                    <h4 class="modal-title"> {{modalContent.title}} </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+               </div>
+
+               <!-- Modal body -->
+               <div class="modal-body">
+                    Modal body..
+               </div>
+
+               <!-- Modal footer -->
+               <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+               </div>
+
+          </div>
+     </div>
+</div>
+
+
+
+
+
+{% endblock content %}
