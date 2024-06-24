@@ -15,7 +15,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = str(os.getenv('SECRET_KEY'))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", "False").lower() == "true"
+DEBUG = os.getenv("DEBUG", "False").lower()
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(" ")
 
@@ -70,13 +70,10 @@ WSGI_APPLICATION = 'blogpro.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-         default=os.getenv('DATABASE_URL'),
+        default=os.getenv('DATABASE_URL'),
         conn_max_age=600
     )
 }
-
-# DATABASES['default'] = dj_database_url.parse(os.getenv('DATABASE_URL'))
-
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
@@ -115,12 +112,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, '/image')
 
 
 
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'blogpro/static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
+
 if not DEBUG:
     # Tell Django to copy static assets into a path called `staticfiles` (this is specific to Render)
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
