@@ -6,7 +6,7 @@ class Blog(models.Model):
      author_name = models.CharField(max_length=255)
      author_image = models.ImageField(upload_to="Author", null=True, blank=True)
      title = models.CharField(max_length=255, unique=True) 
-     coverImage = models.ImageField(upload_to='static/Blog')
+     coverImage = models.ImageField(upload_to='static/BlogImage')
      description = models.TextField()
      total_likes = models.PositiveBigIntegerField(default=0, null=True, blank=True)
      totalComments = models.PositiveBigIntegerField(default=0)
@@ -25,7 +25,7 @@ class Comment(models.Model):
      createdAt = models.DateTimeField(auto_now_add=True)
      
      def __str__(self):
-          return f'::: {self.author} ::: {self.id}'
+          return f'::: {self.author} ::: {self.id} ::: '
 
 
 
