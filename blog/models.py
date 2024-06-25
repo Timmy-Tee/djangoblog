@@ -6,7 +6,7 @@ class Blog(models.Model):
      author_name = models.CharField(max_length=255)
      author_image = models.ImageField(upload_to="Author", null=True, blank=True)
      title = models.CharField(max_length=255, unique=True) 
-     coverImage = models.ImageField(upload_to='static/BlogImage')
+     coverImage = models.ImageField(upload_to='static/image')
      description = models.TextField()
      total_likes = models.PositiveBigIntegerField(default=0, null=True, blank=True)
      totalComments = models.PositiveBigIntegerField(default=0)
