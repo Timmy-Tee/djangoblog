@@ -168,7 +168,6 @@ def create_blog(request):
           blogtitle = request.POST['blogtitle']
           blogcoverimage = request.FILES['blogcoverimage']
           description = request.POST['description']
-          cloudinary.uploader.upload(authorimage)
           cloudinary.uploader.upload(blogcoverimage)
           
           if Blog.objects.filter(title=blogtitle).exists():
