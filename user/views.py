@@ -1,9 +1,11 @@
+import cloudinary.uploader
 from django.shortcuts import render, redirect
 from . forms import UserProfile
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from django.db.models import Q
+import cloudinary
 
 # Create your views here.
 # ////// Registration
@@ -14,6 +16,9 @@ def registration(request):
                username = form.cleaned_data.get('username')
                email = form.cleaned_data.get('email')
                password = form.cleaned_data.get('password1')
+               userImage = form.cleaned_data.get('userImage')
+               cloudinary.uploader.upload(userImage)
+               
                
                # If the user Email Already Exist
                if form.cleaned_data['userImage'] == " ":
@@ -29,7 +34,9 @@ def registration(request):
                     form.user = user
                     form.save()
                     messages.success(request, "User Regiestered Successfully")
-                    return redirect('login')
+                    login(request, user)
+                    return redirect('home')
+               
           else: 
                messages.warning(request, "Error Registering User")
                

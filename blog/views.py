@@ -1,13 +1,11 @@
+import cloudinary.uploader
 from django.shortcuts import render,redirect
 from . models import *
 from user.models import Profile
 from django.contrib import messages
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-
-def page_not_found_view(request):
-    return render(request, '404.html', status=404)
-
+import cloudinary
 
 
 
@@ -19,7 +17,6 @@ def index(request):
      context = {
           'blog': blogs
      }
-     
      return render(request, "blog/all_post.html", context)
 
 
@@ -160,16 +157,18 @@ def blogReply(request):
           return redirect('home')
 
 
-
+@login_required(login_url="login")
 def create_blog(request):
      profile =  Profile.objects.get(user=request.user)
-     profileImage = profile.userImage
+     print(f'*********** PROFILE IMAGE *******  {profile}')
      if request.method=="POST":
           authorname = request.POST['authorname']
           authorimage = request.POST['authorimage']
           blogtitle = request.POST['blogtitle']
           blogcoverimage = request.FILES['blogcoverimage']
           description = request.POST['description']
+          cloudinary.uploader.upload(authorimage)
+          cloudinary.uploader.upload(blogcoverimage)
           
           if Blog.objects.filter(title=blogtitle).exists():
                messages.warning(request, 'Blog title already exist')
@@ -180,7 +179,7 @@ def create_blog(request):
                return redirect('home')
           
      context={
-          'profileImage': profileImage
+          'profileImage': profile
      }
      
      return render(request, 'blog/create_blog.html', context)

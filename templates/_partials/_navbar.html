@@ -19,11 +19,12 @@
         </li>
         {% endif %}
 
-        <li class="nav-item dropdown">
+        <li class="nav-item dropdown d-flex align-items-center">
           {% if request.user.is_authenticated %}
+          <span style="font-size: 19px;">{{request.user.username |title}}</span>
           <a class="nav-link mx-2 dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
             data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-person fs-2"></i>
+             <i class="bi bi-person fs-2 p-0 m-0 primary"> </i>
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
             <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
