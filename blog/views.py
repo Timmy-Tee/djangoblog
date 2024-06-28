@@ -160,6 +160,7 @@ def blogReply(request):
 @login_required(login_url="login")
 def create_blog(request):
      profile =  Profile.objects.get(user=request.user)
+     profileImage = profile.userImage
      print(f'*********** PROFILE IMAGE *******  {profile}')
      if request.method=="POST":
           authorname = request.POST['authorname']
@@ -179,7 +180,7 @@ def create_blog(request):
                return redirect('home')
           
      context={
-          'profileImage': profile
+          'profileImage': profileImage
      }
      
      return render(request, 'blog/create_blog.html', context)
